@@ -1,7 +1,9 @@
 package com.example.lms.service;
 
+import com.example.lms.exceptions.BookNotFoundException;
 import com.example.lms.models.Book;
 import com.example.lms.repository.BookRepository;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,43 @@ public class BookService implements IBookService {
         return bookRepository.findAll();
     }
     @Override
-    public Book findById(Long id) {
-        Optional<Book> optionalBook = bookRepository.findById(id);
-        return optionalBook.orElse(null);
+    public Optional<Book> findById(Long id) {
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isEmpty()){
+            throw new BookNotFoundException("Book not found");
+        }
+        return book;
+    }
+    @Override
+    public Book saveBook(Book book){
+        try{
+            return bookRepository.save(book);
+        }
+        catch (ConstraintViolationException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+    @Override
+    public Optional<Book> updateBook(Long id, Book bookDetails){
+        return bookRepository.findById(id)
+                .map(book -> {
+                    book.setAuthor(bookDetails.getAuthor());
+                    book.setTitle(bookDetails.getTitle());
+                    book.setIsbn(bookDetails.getIsbn());
+                    book.setPublicationYear(bookDetails.getPublicationYear());
+                    try {
+                        return Optional.of(bookRepository.save(book));
+                    } catch (ConstraintViolationException e) {
+                        throw new IllegalArgumentException(e.getMessage());
+                    }
+                })
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
+    }
+    @Override
+    public void deleteBook(Long id){
+        if(!bookRepository.existsById(id)){
+            throw new BookNotFoundException("book not found");
+        }
+        bookRepository.deleteById(id);
     }
 }
