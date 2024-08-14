@@ -63,6 +63,7 @@ public class BookService implements IBookService {
     }
     @Override
     public void deleteBook(Long id){
+        // TODO add cannot remove if borrowed
         if(!bookRepository.existsById(id)){
             throw new EntityNotFoundException("book not found");
         }

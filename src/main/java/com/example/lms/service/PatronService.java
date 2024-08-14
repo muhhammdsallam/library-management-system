@@ -59,6 +59,7 @@ public class PatronService implements IPatronService{
     }
     @Override
     public void deletePatron(Long id){
+        // TODO cannot remove if the return date has not came yet
         if(!patronRepository.existsById(id)){
             throw new EntityNotFoundException("Patron not found");
         }
