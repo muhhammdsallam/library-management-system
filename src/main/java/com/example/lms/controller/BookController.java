@@ -1,8 +1,11 @@
 package com.example.lms.controller;
 
+import com.example.lms.dto.BookDTO;
+import com.example.lms.exceptions.EntityNotFoundException;
 import com.example.lms.exceptions.ErrorMessage;
 import com.example.lms.models.Book;
 import com.example.lms.service.BookService;
+import com.example.lms.utils.BookMapper;
 import com.fasterxml.jackson.datatype.jdk8.WrappedIOException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/books")
@@ -22,56 +26,29 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public ResponseEntity<?> getAllBooks(){
-        try{
-            List<Book> books = bookService.findAll();
-            return new ResponseEntity<>(books, HttpStatus.OK);
-        }
-        catch (Exception e){
-            ErrorMessage error = new ErrorMessage("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<BookDTO>> getAllBooks(){
+        List<BookDTO> bookDTOs = bookService.findAll();
+        return new ResponseEntity<>(bookDTOs, HttpStatus.OK);
 
     }
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBookById(@PathVariable Long id) {
-        try {
-            Optional<Book> book = bookService.findById(id);
-            return book.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        } catch (Exception e) {
-            ErrorMessage error = new ErrorMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
+        BookDTO bookDTO = bookService.findById(id);
+        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<?> addNewBook(@Valid @RequestBody Book book){
-        try {
-            Book addedBook = bookService.saveBook(book);
-            return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
-        } catch (Exception e) {
-            ErrorMessage error = new ErrorMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<BookDTO> addNewBook(@Valid @RequestBody BookDTO bookDTO){
+        BookDTO addedBookDTO = bookService.saveBook(bookDTO);
+        return new ResponseEntity<>(addedBookDTO, HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id,@Valid @RequestBody Book book ){
-        try {
-            Optional<Book> updatedBook = bookService.updateBook(id, book);
-            return updatedBook.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        } catch (Exception e) {
-            ErrorMessage error = new ErrorMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Object> updateBook(@PathVariable Long id,@Valid @RequestBody BookDTO bookDTO ){
+        BookDTO updatedBookDTO = bookService.updateBook(id, bookDTO);
+        return new ResponseEntity<>(updatedBookDTO, HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable Long id){
-        try{
-            bookService.deleteBook(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        catch (Exception e){
-            ErrorMessage error = new ErrorMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        bookService.deleteBook(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

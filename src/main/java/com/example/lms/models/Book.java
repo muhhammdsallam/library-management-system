@@ -15,22 +15,15 @@ import java.util.List;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
-
-    @NotBlank(message = "title cannot be blank")
+    @Column(nullable = false)
     private String title;
-
-    @NotBlank(message = "author name cannot be blank")
+    @Column(nullable = false)
     private String author;
-
-    @Min(value = 1500, message = "Publication year must be no earlier than 1500")
-    @Max(value = 2024, message = "Publication year must be no later than 2024")
+    @Column(nullable = false)
     private int publicationYear;
-
-    @Column(length = 13, unique = true)
-    @Size(min = 10, max = 13, message = "ISBN must be between 10 and 13 characters")
-    @Pattern(regexp = "\\d+", message = "ISBN must be numeric")
-    @NotBlank(message = "isbn cannot be blank")
+    @Column(length = 13, unique = true, nullable = false)
     private String isbn;
 
 }

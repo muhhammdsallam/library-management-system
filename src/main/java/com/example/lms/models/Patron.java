@@ -18,14 +18,12 @@ import java.util.List;
 public class Patron {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
-    @NotBlank(message = "patron name cannot be blank")
+    @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "mobile number cannot be blank")
-    @Size(min = 10, max = 15, message = "Mobile number must be between 10 and 15 characters")
-    @Pattern(regexp = "\\d+", message = "Mobile number must be numeric")
-    @Column(length = 15)
+    @Column(length = 15,nullable = false)
     private String mobileNumber;
 
 }

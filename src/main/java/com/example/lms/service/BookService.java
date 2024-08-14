@@ -1,14 +1,17 @@
 package com.example.lms.service;
 
-import com.example.lms.exceptions.BookNotFoundException;
+import com.example.lms.dto.BookDTO;
+import com.example.lms.exceptions.EntityNotFoundException;
 import com.example.lms.models.Book;
 import com.example.lms.repository.BookRepository;
+import com.example.lms.utils.BookMapper;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService implements IBookService {
@@ -16,46 +19,52 @@ public class BookService implements IBookService {
     private BookRepository bookRepository;
 
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<BookDTO> findAll() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream()
+                .map(BookMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookDTO findById(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+        return BookMapper.toDTO(book);
     }
     @Override
-    public Optional<Book> findById(Long id) {
-        Optional<Book> book = bookRepository.findById(id);
-        if(book.isEmpty()){
-            throw new BookNotFoundException("Book not found");
-        }
-        return book;
+    public BookDTO saveBook(BookDTO bookDTO){
+        // TODO check if it is already exists
+            Book book = BookMapper.toEntity(bookDTO);
+            try {
+                Book savedBook = bookRepository.save(book);
+                return BookMapper.toDTO(savedBook);
+            }
+            catch (ConstraintViolationException e){
+                throw new IllegalArgumentException(e.getMessage());
+            }
     }
     @Override
-    public Book saveBook(Book book){
-        try{
-            return bookRepository.save(book);
+    public BookDTO updateBook(Long id, BookDTO bookDTO){
+        try {
+            Book existingBook = bookRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+            existingBook.setTitle(bookDTO.getTitle());
+            existingBook.setAuthor(bookDTO.getAuthor());
+            existingBook.setPublicationYear(bookDTO.getPublicationYear());
+            existingBook.setIsbn(bookDTO.getIsbn());
+
+            Book updatedBook = bookRepository.save(existingBook);
+            return BookMapper.toDTO(updatedBook);
         }
         catch (ConstraintViolationException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }
     @Override
-    public Optional<Book> updateBook(Long id, Book bookDetails){
-        return bookRepository.findById(id)
-                .map(book -> {
-                    book.setAuthor(bookDetails.getAuthor());
-                    book.setTitle(bookDetails.getTitle());
-                    book.setIsbn(bookDetails.getIsbn());
-                    book.setPublicationYear(bookDetails.getPublicationYear());
-                    try {
-                        return Optional.of(bookRepository.save(book));
-                    } catch (ConstraintViolationException e) {
-                        throw new IllegalArgumentException(e.getMessage());
-                    }
-                })
-                .orElseThrow(() -> new BookNotFoundException("Book not found"));
-    }
-    @Override
     public void deleteBook(Long id){
         if(!bookRepository.existsById(id)){
-            throw new BookNotFoundException("book not found");
+            throw new EntityNotFoundException("book not found");
         }
         bookRepository.deleteById(id);
     }
