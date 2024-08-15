@@ -1,10 +1,12 @@
 package com.example.lms.service;
 
 import com.example.lms.dto.BookDTO;
+import com.example.lms.exceptions.EntityAlreadyExistsException;
 import com.example.lms.exceptions.EntityNotFoundException;
 import com.example.lms.models.Book;
 import com.example.lms.repository.BookRepository;
 import com.example.lms.utils.BookMapper;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class BookService implements IBookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Transactional
     @Override
     public List<BookDTO> findAll() {
         List<Book> books = bookRepository.findAll();
@@ -26,15 +29,21 @@ public class BookService implements IBookService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public BookDTO findById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
         return BookMapper.toDTO(book);
     }
+    @Transactional
     @Override
     public BookDTO saveBook(BookDTO bookDTO){
-        // TODO check if it is already exists
+            Optional<Book> existingBook = bookRepository.findByIsbn(bookDTO.getIsbn());
+            if(existingBook.isPresent()){
+                throw new EntityAlreadyExistsException("Book with the same ISBN already exists");
+            }
+
             Book book = BookMapper.toEntity(bookDTO);
             try {
                 Book savedBook = bookRepository.save(book);
@@ -44,6 +53,7 @@ public class BookService implements IBookService {
                 throw new IllegalArgumentException(e.getMessage());
             }
     }
+    @Transactional
     @Override
     public BookDTO updateBook(Long id, BookDTO bookDTO){
         try {
@@ -61,6 +71,7 @@ public class BookService implements IBookService {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+    @Transactional
     @Override
     public void deleteBook(Long id){
         // TODO add cannot remove if borrowed

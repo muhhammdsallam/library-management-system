@@ -42,13 +42,13 @@ public class BookController {
         return new ResponseEntity<>(addedBookDTO, HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateBook(@PathVariable Long id,@Valid @RequestBody BookDTO bookDTO ){
+    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id,@Valid @RequestBody BookDTO bookDTO ){
         BookDTO updatedBookDTO = bookService.updateBook(id, bookDTO);
         return new ResponseEntity<>(updatedBookDTO, HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable Long id){
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id){
         bookService.deleteBook(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -46,4 +46,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> handleEntityAlreadyExistsException(EntityAlreadyExistsException e){
+        ErrorMessage errorMessage = new ErrorMessage(e.getMessage(),HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(errorMessage,HttpStatus.NOT_FOUND);
+    }
+
 }

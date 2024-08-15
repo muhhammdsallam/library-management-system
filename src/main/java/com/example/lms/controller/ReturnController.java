@@ -8,15 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/borrow")
-public class BorrowingController {
+@RequestMapping("api/return")
+public class ReturnController {
     @Autowired
     private BorrowingService borrowingService;
 
-    @PostMapping("/{bookId}/patron/{patronId}")
-    public ResponseEntity<BorrowingRecordDTO> borrowBook(@PathVariable Long bookId, @PathVariable Long patronId) {
-        BorrowingRecordDTO recordDTO = borrowingService.borrowBook(bookId, patronId);
-        return new ResponseEntity<>(recordDTO, HttpStatus.CREATED);
+    @PutMapping("/{bookId}/patron/{patronId}")
+    public ResponseEntity<BorrowingRecordDTO> returnBook(@PathVariable Long bookId, @PathVariable Long patronId) {
+        BorrowingRecordDTO recordDTO = borrowingService.returnBook(bookId, patronId);
+        return new ResponseEntity<>(recordDTO, HttpStatus.OK);
     }
-
 }
