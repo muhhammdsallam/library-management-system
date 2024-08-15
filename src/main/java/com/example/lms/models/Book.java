@@ -15,15 +15,15 @@ import java.util.List;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @Column(name = "id",nullable = false)
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "title",nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column(name = "author",nullable = false)
     private String author;
-    @Column(nullable = false)
+    @Column(name = "publication_year",nullable = false)
     private int publicationYear;
-    @Column(length = 13, unique = true, nullable = false)
+    @Column(name = "isbn",length = 13, unique = true, nullable = false)
     private String isbn;
 
 }

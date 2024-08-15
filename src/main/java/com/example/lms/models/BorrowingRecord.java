@@ -23,6 +23,8 @@ public class BorrowingRecord {
     @JoinColumn(name = "patron_id")
     private Patron patron;
 
+    @Column(name = "borrowing_date")
     private LocalDate borrowingDate;
+    @Column(name = "return_date")
     private LocalDate returnDate;
 }

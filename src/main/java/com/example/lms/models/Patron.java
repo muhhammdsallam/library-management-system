@@ -20,10 +20,10 @@ public class Patron {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "name",nullable = false,length = 255)
     private String name;
 
-    @Column(length = 15,nullable = false)
+    @Column(name = "mobile_number",length = 15,nullable = false)
     private String mobileNumber;
 
 }
