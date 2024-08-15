@@ -1,6 +1,7 @@
 package com.example.lms.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Table(name = "borrowing_record")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class BorrowingRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

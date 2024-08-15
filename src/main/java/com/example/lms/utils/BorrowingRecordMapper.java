@@ -20,20 +20,4 @@ public class BorrowingRecordMapper {
 
         return borrowingRecordDTO;
     }
-
-//    public static BorrowingRecord toEntity(BorrowingRecordDTO borrowingRecordDTO) {
-//        if (borrowingRecordDTO == null) {
-//            return null;
-//        }
-//
-//        BorrowingRecord borrowingRecord = new BorrowingRecord();
-//        borrowingRecord.setId(borrowingRecordDTO.getId());
-//        // Assuming you have relationships set up
-//        borrowingRecord.setBook(null); // Needs to be retrieved from repository
-//        borrowingRecord.setPatron(null); // Needs to be retrieved from repository
-//        borrowingRecord.setBorrowingDate(borrowingRecordDTO.getBorrowingDate());
-//        borrowingRecord.setReturnDate(borrowingRecordDTO.getReturnDate());
-//
-//        return borrowingRecord;
-//    }
 }

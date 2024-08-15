@@ -1,6 +1,7 @@
 package com.example.lms.service;
 
 import com.example.lms.dto.BorrowingRecordDTO;
+import com.example.lms.exceptions.EntityAlreadyReservedException;
 import com.example.lms.exceptions.EntityNotFoundException;
 import com.example.lms.models.Book;
 import com.example.lms.models.BorrowingRecord;
@@ -36,7 +37,7 @@ public class BorrowingService implements IBorrowingService{
     public BorrowingRecordDTO borrowBook(Long bookId, Long patronId){
 
         if (isBookBorrowed(bookId)) {
-            throw new IllegalStateException("Book is already borrowed");
+            throw new EntityAlreadyReservedException("Book is already borrowed");
         }
 
         Book book = bookRepository.findById(bookId)
@@ -58,14 +59,13 @@ public class BorrowingService implements IBorrowingService{
 
     @Transactional
     public BorrowingRecordDTO returnBook(Long bookId, Long patronId){
-        // check if book or patron exists
+
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
         Patron patron = patronRepository.findById(patronId)
                 .orElseThrow(() -> new EntityNotFoundException("Patron not found"));
-        // check if the book is borrowed
-        if(isBookBorrowed(bookId)){
 
+        if(isBookBorrowed(bookId)){
             BorrowingRecord borrowingRecord = borrowingRecordRepository.findByBookIdAndPatronIdAndReturnDateIsNull(bookId, patronId)
                     .orElseThrow(() -> new EntityNotFoundException("Book is not borrowed by this patron"));
             borrowingRecord.setReturnDate(LocalDate.now());

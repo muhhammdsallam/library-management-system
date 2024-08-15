@@ -52,4 +52,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EntityAlreadyReservedException.class)
+    public ResponseEntity<ErrorMessage> EntityAlreadyReservedException(EntityAlreadyReservedException e){
+        ErrorMessage errorMessage = new ErrorMessage(e.getMessage(),HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(errorMessage,HttpStatus.FORBIDDEN);
+    }
+
 }
