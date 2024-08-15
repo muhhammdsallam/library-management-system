@@ -48,8 +48,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityAlreadyExistsException.class)
     public ResponseEntity<ErrorMessage> handleEntityAlreadyExistsException(EntityAlreadyExistsException e){
-        ErrorMessage errorMessage = new ErrorMessage(e.getMessage(),HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(errorMessage,HttpStatus.NOT_FOUND);
+        ErrorMessage errorMessage = new ErrorMessage(e.getMessage(),HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorMessage,HttpStatus.BAD_REQUEST);
     }
 
 }

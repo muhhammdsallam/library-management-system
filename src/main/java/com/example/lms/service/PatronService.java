@@ -9,6 +9,7 @@ import com.example.lms.utils.PatronMapper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class PatronService implements IPatronService{
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(cacheNames = "patrons")
     @Transactional
     @Override
     public PatronDTO findById(Long id) {

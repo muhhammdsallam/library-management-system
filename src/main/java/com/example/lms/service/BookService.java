@@ -9,6 +9,7 @@ import com.example.lms.utils.BookMapper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,8 +30,9 @@ public class BookService implements IBookService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
+    @Transactional
+    @Cacheable(cacheNames = "books")
     public BookDTO findById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
