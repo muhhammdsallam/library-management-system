@@ -12,9 +12,8 @@ public class BorrowingRecordMapper {
 
         BorrowingRecordDTO borrowingRecordDTO = new BorrowingRecordDTO();
         borrowingRecordDTO.setId(borrowingRecord.getId());
-        // Assuming you have getters and setters for these fields
-        borrowingRecordDTO.setBookId(borrowingRecord.getBook().getId());  // Get book ID
-        borrowingRecordDTO.setPatronId(borrowingRecord.getPatron().getId()); // Get patron ID
+        borrowingRecordDTO.setBookId(borrowingRecord.getBook().getId());
+        borrowingRecordDTO.setPatronId(borrowingRecord.getPatron().getId());
         borrowingRecordDTO.setBorrowingDate(borrowingRecord.getBorrowingDate());
         borrowingRecordDTO.setReturnDate(borrowingRecord.getReturnDate());
 
