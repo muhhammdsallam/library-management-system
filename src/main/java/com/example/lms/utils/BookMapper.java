@@ -17,6 +17,7 @@ public class BookMapper {
         bookDTO.setAuthor(book.getAuthor());
         bookDTO.setPublicationYear(book.getPublicationYear());
         bookDTO.setIsbn(book.getIsbn());
+        bookDTO.setQuantity(book.getQuantity());
 
         return bookDTO;
     }
@@ -32,6 +33,7 @@ public class BookMapper {
         book.setAuthor(bookDTO.getAuthor());
         book.setPublicationYear(bookDTO.getPublicationYear());
         book.setIsbn(bookDTO.getIsbn());
+        book.setQuantity(bookDTO.getQuantity());
 
         return book;
     }

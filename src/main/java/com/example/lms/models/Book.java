@@ -27,5 +27,7 @@ public class Book {
     private int publicationYear;
     @Column(name = "isbn",length = 13, unique = true, nullable = false)
     private String isbn;
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
 
 }

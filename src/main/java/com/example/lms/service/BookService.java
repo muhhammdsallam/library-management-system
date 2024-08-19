@@ -65,6 +65,7 @@ public class BookService implements IBookService {
             existingBook.setAuthor(bookDTO.getAuthor());
             existingBook.setPublicationYear(bookDTO.getPublicationYear());
             existingBook.setIsbn(bookDTO.getIsbn());
+            existingBook.setQuantity(bookDTO.getQuantity());
 
             Book updatedBook = bookRepository.save(existingBook);
             return BookMapper.toDTO(updatedBook);

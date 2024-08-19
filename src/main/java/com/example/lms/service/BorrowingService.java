@@ -27,16 +27,11 @@ public class BorrowingService implements IBorrowingService{
     @Autowired
     private PatronRepository patronRepository;
 
-    @Override
-    public boolean isBookBorrowed(Long bookId) {
-        return borrowingRecordRepository.existsByBookIdAndReturnDateIsNull(bookId);
-    }
-
     @Transactional
     @Override
     public BorrowingRecordDTO borrowBook(Long bookId, Long patronId){
 
-        if (isBookBorrowed(bookId)) {
+        if (!bookRepository.isBookAvailable(bookId)) {
             throw new EntityAlreadyReservedException("Book is already borrowed");
         }
 
@@ -49,8 +44,10 @@ public class BorrowingService implements IBorrowingService{
         borrowingRecord.setBook(book);
         borrowingRecord.setPatron(patron);
         borrowingRecord.setBorrowingDate(LocalDate.now());
-
         BorrowingRecord savedRecord = borrowingRecordRepository.save(borrowingRecord);
+
+        book.setQuantity(book.getQuantity() - 1);
+        bookRepository.save(book);
 
         BorrowingRecordDTO borrowingRecordDTO = BorrowingRecordMapper.toDTO(savedRecord);
 
@@ -65,11 +62,14 @@ public class BorrowingService implements IBorrowingService{
         Patron patron = patronRepository.findById(patronId)
                 .orElseThrow(() -> new EntityNotFoundException("Patron not found"));
 
-        if(isBookBorrowed(bookId)){
+        if(!bookRepository.isBookAvailable(bookId)){
             BorrowingRecord borrowingRecord = borrowingRecordRepository.findByBookIdAndPatronIdAndReturnDateIsNull(bookId, patronId)
                     .orElseThrow(() -> new EntityNotFoundException("Book is not borrowed by this patron"));
             borrowingRecord.setReturnDate(LocalDate.now());
             borrowingRecordRepository.save(borrowingRecord);
+
+            book.setQuantity(book.getQuantity() + 1);
+            bookRepository.save(book);
 
             return BorrowingRecordMapper.toDTO(borrowingRecord);
         }else{

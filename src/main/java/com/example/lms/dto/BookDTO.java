@@ -32,4 +32,9 @@ public class BookDTO {
     @NotNull(message = "isbn cannot be null")
     @NotBlank(message = "isbn cannot be blank")
     private String isbn;
+
+    @NotNull(message = "Quantity cannot be null")
+    @NotBlank(message = "Quantity cannot be blank")
+    @Min(value = 0, message = "quantity must be at least 0")
+    private int quantity;
 }
